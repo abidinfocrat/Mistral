@@ -1,0 +1,125 @@
+{
+  "name": "markdown-editor-pro",
+  "displayName": "Markdown Editor Pro",
+  "description": "A beautiful distraction-free Markdown editor with live preview, export to PDF/HTML/Word, image drag-and-drop, and GitHub-flavored Markdown support.",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:markdown-editor-pro.openEditor",
+    "onCommand:markdown-editor-pro.exportPDF",
+    "onCommand:markdown-editor-pro.exportHTML",
+    "onCommand:markdown-editor-pro.exportWord",
+    "onCommand:markdown-editor-pro.insertImage"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdown-editor-pro.openEditor",
+        "title": "Open Markdown Editor Pro"
+      },
+      {
+        "command": "markdown-editor-pro.exportPDF",
+        "title": "Export to PDF"
+      },
+      {
+        "command": "markdown-editor-pro.exportHTML",
+        "title": "Export to HTML"
+      },
+      {
+        "command": "markdown-editor-pro.exportWord",
+        "title": "Export to Word"
+      },
+      {
+        "command": "markdown-editor-pro.insertImage",
+        "title": "Insert Image"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "markdown-editor-pro.openEditor",
+          "when": "editorTextFocus && editorLangId == markdown"
+        },
+        {
+          "command": "markdown-editor-pro.exportPDF",
+          "when": "editorTextFocus && editorLangId == markdown"
+        },
+        {
+          "command": "markdown-editor-pro.exportHTML",
+          "when": "editorTextFocus && editorLangId == markdown"
+        },
+        {
+          "command": "markdown-editor-pro.exportWord",
+          "when": "editorTextFocus && editorLangId == markdown"
+        },
+        {
+          "command": "markdown-editor-pro.insertImage",
+          "when": "editorTextFocus && editorLangId == markdown"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "markdown-editor-pro.exportPDF",
+          "group": "navigation",
+          "when": "editorTextFocus && editorLangId == markdown"
+        },
+        {
+          "command": "markdown-editor-pro.exportHTML",
+          "group": "navigation",
+          "when": "editorTextFocus && editorLangId == markdown"
+        },
+        {
+          "command": "markdown-editor-pro.exportWord",
+          "group": "navigation",
+          "when": "editorTextFocus && editorLangId == markdown"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "eslint": "^8.19.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "marked": "^4.2.12",
+    "highlight.js": "^11.7.0",
+    "pdf-lib": "^1.17.1",
+    "html-pdf-node": "^1.7.0",
+    "mammoth": "^1.6.0",
+    "uuid": "^9.0.0"
+  },
+  "license": "MIT",
+  "publisher": "abidinfocrat",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abidinfocrat/Mistral"
+  },
+  "keywords": [
+    "markdown",
+    "editor",
+    "preview",
+    "export",
+    "pdf",
+    "html",
+    "word",
+    "github-flavored"
+  ]
+}

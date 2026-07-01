@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install vsce
+      run: npm install -g @vscode/vsce
+    
+    - name: Build extension
+      run: npm run compile
+    
+    - name: Package extension
+      run: vsce package
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    
+    - name: Get version from tag
+      id: version
+      run: |
+        TAG=${{ github.ref_name }}
+        VERSION=${TAG#v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: Markdown Editor Pro v${{ steps.version.outputs.version }}
+        body: |
+          ## What's New in v${{ steps.version.outputs.version }}
+          
+          - [View full changelog](https://github.com/abidinfocrat/Mistral/blob/main/markdown-editor-extension/CHANGELOG.md)
+          
+          ## Download
+          
+          - [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=abidinfocrat.markdown-editor-pro)
+          - [Direct Download (.vsix)](https://github.com/abidinfocrat/Mistral/releases/download/${{ github.ref_name }}/markdown-editor-pro-${{ steps.version.outputs.version }}.vsix)
+        files: |
+          *.vsix
+          out/
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Publish to VS Code Marketplace
+      run: |
+        VSIX_FILE=$(ls *.vsix | head -1)
+        vsce publish -p $VSIX_FILE --yarn
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}

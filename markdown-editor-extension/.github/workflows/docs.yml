@@ -1,0 +1,60 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build documentation
+      run: |
+        # Create docs directory if it doesn't exist
+        mkdir -p docs
+        
+        # Copy main documentation files
+        cp README.md docs/index.md
+        cp CHANGELOG.md docs/changelog.md
+        cp SETUP_GUIDE.md docs/setup.md
+        
+        # Copy business documents
+        mkdir -p docs/business
+        cp business/*.md docs/business/
+        
+        # Create a simple index.html that redirects to README
+        cat > docs/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0; url=index.md">
+            <title>Markdown Editor Pro - Documentation</title>
+        </head>
+        <body>
+            <p>Redirecting to <a href="index.md">documentation</a>...</p>
+        </body>
+        </html>
+        EOF
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
+        keep_files: false
